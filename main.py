@@ -25,7 +25,7 @@ def main():
         dataset.create_subset(subset_name, frame_len=frame_len)
         dataset.load_file(os.path.join(subset_name, 'diodeclip'), subset_name)
 
-    EPOCH_COUNT = 5
+    EPOCH_COUNT = 20
     VALIDATE_EVERY = 5
     BATCH_SIZE = 64
     INIT_LEN = 1000
