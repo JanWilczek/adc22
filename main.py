@@ -16,12 +16,11 @@ def main():
         torch.cuda.set_device(0)
         network = network.cuda()
         
-    optimiser = torch.optim.Adam(network.parameters(), lr=0.001, weight_decay=1e-4)
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.001, weight_decay=1e-4)
     loss = ESRLoss()
     dataset = DataSet(data_dir='data')
     
     for subset_name, frame_len in zip(['train', 'validation', 'test'], [22050, 0, 0]):
-        # Check what does it do
         dataset.create_subset(subset_name, frame_len=frame_len)
         dataset.load_file(os.path.join(subset_name, 'diodeclip'), subset_name)
 
@@ -40,7 +39,7 @@ def main():
     
     for epoch in range(1, EPOCH_COUNT + 1):
         epoch_loss = network.train_epoch(dataset.subsets['train'].data['input'][0],
-                                        dataset.subsets['train'].data['target'][0], loss, optimiser, BATCH_SIZE, INIT_LEN, UP_FR)
+                                        dataset.subsets['train'].data['target'][0], loss, optimizer, BATCH_SIZE, INIT_LEN, UP_FR)
                                         
         print(f"Epoch {epoch}/{EPOCH_COUNT} training loss: {epoch_loss}")
         logger.add_scalar('Loss/train', epoch_loss, epoch)
