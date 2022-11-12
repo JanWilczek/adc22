@@ -1,5 +1,6 @@
 """Set up an NN architecture, run its training and test on the diode clipper data."""
 import os
+import soundfile as sf
 from CoreAudioML.networks import SimpleRNN
 from CoreAudioML.training import ESRLoss
 from CoreAudioML.dataset import DataSet
@@ -28,7 +29,7 @@ def main():
     
     network = SimpleRNN(input_size=1, output_size=1, unit_type="LSTM", hidden_size=8, skip=0, bias_fl=False)
     loss = ESRLoss()
-    optimizer = torch.optim.Adam(network.parameters(), lr=0.001, weight_decay=1e-4)
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.001)
     
     logger = SummaryWriter(RUNS_DIRECTORY)
     
@@ -63,6 +64,8 @@ def main():
     
     print(f"Test loss: {test_loss}")
     logger.add_scalar('Loss/test', test_loss, EPOCH_COUNT)
+
+    sf.write("test_output.wav", test_output.cpu().numpy().flatten(), dataset.subsets['test'].fs)
 
 
 if __name__ == '__main__':
